@@ -21,6 +21,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config.config import (
     RAW_DATA_DIR,
     ORACLE_ELIXIR_FILE_IDS,
+    ORACLE_ELIXIR_DIRECT_URLS,
     CURRENT_YEAR
 )
 
@@ -78,12 +79,31 @@ class DataLoader:
         try:
             print(f"Downloading {year} LoL esports data from Google Drive...")
 
-            # Construct Google Drive download URL
-            # Handle both file and folder IDs
-            url = f"https://drive.google.com/uc?id={file_id}"
+            # Try direct URL first if available
+            if year in ORACLE_ELIXIR_DIRECT_URLS:
+                direct_url = ORACLE_ELIXIR_DIRECT_URLS[year]
+                print(f"Using direct download URL...")
 
-            # Use gdown to download the file
-            gdown.download(url, str(output_path), quiet=False, fuzzy=True)
+                response = requests.get(direct_url, stream=True)
+                response.raise_for_status()
+
+                total_size = int(response.headers.get('content-length', 0))
+                chunk_size = 8192
+
+                with open(output_path, 'wb') as f:
+                    downloaded = 0
+                    for chunk in response.iter_content(chunk_size=chunk_size):
+                        if chunk:
+                            f.write(chunk)
+                            downloaded += len(chunk)
+                            if total_size > 0:
+                                percent = (downloaded / total_size) * 100
+                                print(f"\rDownloading: {percent:.1f}%", end='', flush=True)
+                print()  # New line after progress
+            else:
+                # Fall back to gdown method
+                url = f"https://drive.google.com/uc?id={file_id}"
+                gdown.download(url, str(output_path), quiet=False, fuzzy=True)
 
             print(f"Successfully downloaded data to {output_path}")
             return str(output_path)

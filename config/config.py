@@ -11,9 +11,14 @@ Returns:
 # Google Drive file IDs for Oracle's Elixir datasets
 # These IDs map to specific years of professional LoL esports data
 ORACLE_ELIXIR_FILE_IDS = {
-    2025: "1gLSw0RLjBbtaNy0dgnGQDAZOHIgCe-HH",  # User-provided folder ID
+    2025: "1v6LRphp2kYciU4SXp0PCjEMuev1bDejc",  # 2025 season data
     2024: "1gLSw0RLjBbtaNy0dgnGQDAZOHIgCe-HH",  # Placeholder - update with actual file ID
     # Add more years as needed
+}
+
+# Direct download URLs for Oracle's Elixir datasets
+ORACLE_ELIXIR_DIRECT_URLS = {
+    2025: "https://drive.usercontent.google.com/download?id=1v6LRphp2kYciU4SXp0PCjEMuev1bDejc&export=download",
 }
 
 # Google Drive base URL for direct CSV download
